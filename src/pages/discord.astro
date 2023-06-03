@@ -4,6 +4,8 @@ import { DiscordSessionData, getSessionData } from "../models/discordSession";
 
 import Layout from "../layouts/Layout.astro";
 
+const discord_oauth = import.meta.env.DISCORD_OAUTH_LINK;
+
 let params: any = {};
 
 if (Astro.cookies.has("seshdata")) {
@@ -31,10 +33,7 @@ if (Astro.cookies.has("seshdata")) {
 <Layout title="Discord Oauth2 Flow">
     {
         !params.displayname ? (
-            <a
-                id="login"
-                href="https://discord.com/api/oauth2/authorize?client_id=1061502148740919367&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fdiscord&response_type=code&scope=identify%20guilds%20connections"
-            >
+            <a id="login" href={discord_oauth}>
                 Login With Discord :O
             </a>
         ) : (

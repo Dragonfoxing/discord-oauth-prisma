@@ -1,55 +1,37 @@
-# Astro Starter Kit: Basics
+# Discord-oauth-prisma
 
-```
-npm create astro@latest -- --template basics
-```
+A proof of concept designed to teach myself how to interact with Oauth2, run my own endpoint for the redirect authorization, store a session ID on the browser via cookie and the "secure" content on the server via Prisma.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+What you see is what you get.  I provide no support.  This works on my local machine so it should work on yours, but don't try to upload it to Fly.io or w/e.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## requirements
 
-![basics](https://user-images.githubusercontent.com/4677417/186188965-73453154-fdec-4d6b-9c34-cb35c248ae5b.png)
+`npm install` to make sure stuff gets set up.
 
+You need to supply your own .env with the appropriate variables.  Here's what the code expects:
+* DATABASE_URL="file:./dev.db" (this is just a default setting for testing so you can use this too)
+* DISCORD_CLIENT_ID="yourclientidhere"
+* DISCORD_CLIENT_SECRET="yourclientsecrethere"
+* DISCORD_OAUTH_LINK="youroauthlinkhere"
 
-## 🚀 Project Structure
+You obviously need to have a Discord developer application set up.  You also need to make sure to set `http://localhost:3000/discord` as a redirect and generate an oauth link that uses that redirect.
 
-Inside of your Astro project, you'll see the following folders and files:
+Put the relevant data into the .env file as shown above.
 
-```
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+Once that's done, don't forget to run `npx prisma migrate dev` which should set up dev.db and generate/install the prisma client that the code is expecting.  If it prompts for a migration name just type in whatever.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Instructions
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+* `npm run dev`
+* Navigate to http://localhost:3000/discord
+* Click the login link.
+* Authorize your app to receive your access token.
+* Verify that you have been taken back to http://localhost:3000/discord
+* http://localhost:3000/discord should greet you with your "global_name" (aka Display Name in profile settings).
 
-Any static assets, like images, can be placed in the `public/` directory.
+### Reminders
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:3000`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+* This isn't the most terribly secure code.  There's probably ways you could rewrite things to make it better.
+    * That said, making sure I put all the important code in server-side Astro bits means it's more secure than average by default.
+* Keep your scopes limited.  This app only requires "Identify".
+* And once again this project is WYSIWYG.  I will not provide support.

@@ -1,5 +1,4 @@
 import { prisma } from '../lib/prism';
-import uid from 'uid-safe';
 
 interface DiscordSessionData {
     access_token: string,
