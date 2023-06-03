@@ -1,0 +1,57 @@
+---
+import { request } from "undici";
+export { upsertSessionData } from "../../models/discordSession";
+import {
+    DiscordSessionData,
+    upsertSessionData,
+} from "../../models/discordSession";
+
+const client_id = import.meta.env.DISCORD_CLIENT_ID;
+const client_secret = import.meta.env.DISCORD_CLIENT_SECRET;
+
+const code = Astro.url.searchParams.get("code");
+
+if (code) {
+    try {
+        const tokenResponseData = await request(
+            "https://discord.com/api/oauth2/token",
+            {
+                method: "POST",
+                body: new URLSearchParams({
+                    client_id: client_id,
+                    client_secret: client_secret,
+                    code,
+                    grant_type: "authorization_code",
+                    redirect_uri: "http://localhost:3000/auth/discord",
+                    scope: "identify guilds",
+                }).toString(),
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            }
+        );
+
+        const oauthData = await tokenResponseData.body.json();
+
+        let expdate = new Date(Date.now() + oauthData.expires_in * 1000);
+
+        let seshData: DiscordSessionData = {
+            access_token: oauthData.access_token,
+            refresh_token: oauthData.refresh_token,
+            token_type: oauthData.token_type,
+            expiration: expdate,
+        };
+
+        Astro.cookies.set("seshdata", await upsertSessionData(seshData), {
+            domain: "localhost",
+            expires: expdate,
+            path: "/",
+        });
+
+        return Astro.redirect("/discord", 302);
+    } catch (error) {
+        // A failed authorization does not throw an error here.
+        console.error(error);
+    }
+} else return Astro.redirect("/", 302);
+---

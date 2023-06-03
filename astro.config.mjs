@@ -1,13 +1,14 @@
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
-    output: 'hybrid',
-    experimental: {
-        hybridOutput: true
-    },
+    output: "server",
     adapter: node({
-        mode: 'standalone'
-    })
+        mode: "standalone"
+    }),
+    server: {
+        port: 3000,
+        host: false
+    }
 });
